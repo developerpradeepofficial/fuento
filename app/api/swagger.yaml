@@ -1,0 +1,118 @@
+swagger: '2.0'
+
+info:
+    title: Fluento
+    description: API description for Fluento API's
+    version: 1.0.0
+
+basePath: /api/v1
+
+schemes:
+    - https
+    - http
+
+paths:
+    /meeting:
+        post:
+            tags:
+                - 'meeting'
+            summary: 'Create meeting'
+            description: 'Create meeting'
+            consumes:
+                - 'application/json'
+            produces:
+                - 'application/json'
+            security:
+                - secretApiKey: []
+            responses:
+                '200':
+                    description: 'Meeting created'
+                    schema:
+                        $ref: '#/definitions/MeetingResponse'
+                '403':
+                    description: 'Unauthorized!'
+    /join:
+        post:
+            tags:
+                - 'join'
+            summary: 'Create direct join'
+            description: 'Create join'
+            parameters:
+                - in: body
+                  name: Join
+                  description: Custom Join URL.
+                  schema:
+                      type: object
+                      properties:
+                          room:
+                              type: string
+                              default: 'test'
+                          name:
+                              type: string
+                              default: 'fluento'
+                          audio:
+                              type: boolean
+                              default: false
+                          video:
+                              type: boolean
+                              default: false
+                          screen:
+                              type: boolean
+                              default: false
+                          hide:
+                              type: boolean
+                              default: false
+                          notify:
+                              type: boolean
+                              default: false
+                          token:
+                              type: object
+                              description: |
+                                  Object containing authentication token details.
+                                  This token is required when HOST_PROTECTED or HOST_USER_AUTH is enabled in the .env file.
+                                  It includes properties such as username, password, presenter, and expire.
+                              properties:
+                                  username:
+                                      type: string
+                                      default: 'username'
+                                  password:
+                                      type: string
+                                      default: 'password'
+                                  presenter:
+                                      type: boolean
+                                      default: true
+                                  expire:
+                                      type: string
+                                      default: '1h'
+            consumes:
+                - 'application/json'
+            produces:
+                - 'application/json'
+            security:
+                - secretApiKey: []
+            responses:
+                '200':
+                    description: 'Direct join created'
+                    schema:
+                        $ref: '#/definitions/JoinResponse'
+                '403':
+                    description: 'Unauthorized!'
+
+securityDefinitions:
+    secretApiKey:
+        type: 'apiKey'
+        name: 'authorization'
+        in: 'header'
+        description: 'Format like this: authorization: {API_KEY_SECRET}'
+
+definitions:
+    MeetingResponse:
+        type: 'object'
+        properties:
+            meeting:
+                type: 'string'
+    JoinResponse:
+        type: 'object'
+        properties:
+            join:
+                type: 'string'
